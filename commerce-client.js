@@ -121,6 +121,10 @@
       renderOrders();
       return;
     }
+    if (page === "account") {
+      renderAccount();
+      return;
+    }
     return baseOpenPage(page, arg);
   };
 
@@ -150,8 +154,8 @@
     try {
       const token = await accessToken();
       if (!token) {
-        window.accountTab("login");
         window.openPage("account");
+        window.accountTab("login");
         throw new Error("Please sign in before checkout.");
       }
       const cart = currentCart();
@@ -183,6 +187,25 @@
         button.textContent = "TRY AGAIN ↗";
       }
     }
+  }
+
+  async function renderAccount() {
+    let user = session?.user || null;
+    if (!user && client) {
+      try {
+        const { data } = await client.auth.getSession();
+        session = data.session;
+        user = session?.user || null;
+      } catch (_) {}
+    }
+    if (user) {
+      const displayName = user.user_metadata?.name || (user.email || "").split("@")[0];
+      showShell("YOUR HALF MAGIC / ACCOUNT", '<div class="hm-narrow"><div class="eyebrow">MEMBER SPACE</div><h1>HEY, ' +
+        displayName.toUpperCase().replace(/[&<>"]/g, "") + '.</h1><p class="sub">' + user.email +
+        '</p><button class="pill" onclick="logoutHM()">SIGN OUT</button><div class="hm-detail"><h3>ORDER HISTORY</h3><button class="limebtn" onclick="openPage(\'orders\')">VIEW ORDER HISTORY ↗</button></div></div>');
+      return;
+    }
+    showShell("YOUR HALF MAGIC / ACCOUNT", '<div class="hm-narrow"><div class="eyebrow">MEMBER SPACE</div><h1>COME ON IN.</h1><div class="hm-tabs"><button class="pill" onclick="accountTab(\'login\')">LOG IN</button><button class="pill" onclick="accountTab(\'signup\')">CREATE ACCOUNT</button></div><div id="hm-auth"><form class="hm-authform" onsubmit="loginHM(event)"><input required type="email" placeholder="Email address"><input required type="password" placeholder="Password"><button class="limebtn" type="submit">LOG IN ↗</button></form></div><p class="sub">Your account is securely managed by Supabase Auth.</p></div>');
   }
 
   async function renderOrders() {
