@@ -126,3 +126,19 @@ revoke all on function public.release_order_reservation(uuid) from public, anon,
 grant execute on function public.reserve_inventory_for_order(uuid,jsonb) to service_role;
 grant execute on function public.complete_paid_order(uuid,text,text) to service_role;
 grant execute on function public.release_order_reservation(uuid) to service_role;
+
+-- Starter HALF MAGIC catalog. Re-running this block updates the matching slugs.
+insert into public.products (slug, name, description, price_cents, currency, category, stock, active)
+values
+  ('glitterpuck-pressed-glitter', 'Glitterpuck™ Pressed Glitter', 'A high-impact pressed glitter for eyes, face and wherever your creativity takes you.', 2200, 'usd', 'glitter', 100, true),
+  ('chromaddiction-eye-paint', 'Chromaddiction™ Eye Paint', 'A creamy, blendable eye paint with an electric color payoff.', 2400, 'usd', 'eyes', 100, true),
+  ('blushing-lizard-blush', 'Blushing Lizard™ Blush', 'A buildable flush that brings a little extra attitude to your cheeks.', 2600, 'usd', 'cheeks', 100, true),
+  ('magic-drip-lip-gloss', 'Magic Drip™ Lip Gloss', 'A juicy, glass-like gloss with a playful, light-catching finish.', 1800, 'usd', 'lips', 100, true)
+on conflict (slug) do update set
+  name = excluded.name,
+  description = excluded.description,
+  price_cents = excluded.price_cents,
+  currency = excluded.currency,
+  category = excluded.category,
+  active = excluded.active,
+  updated_at = now();
