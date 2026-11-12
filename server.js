@@ -107,6 +107,7 @@ app.post("/api/checkout/session", requireUser, async (req, res) => {
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
       customer_email: req.user.email,
       line_items: lines.map((line) => ({
         quantity: line.quantity,
