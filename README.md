@@ -1,17 +1,23 @@
 # HALF MAGIC — Makeup is Play
 
-A responsive, interactive HALF MAGIC-inspired beauty storefront prototype.
+A responsive beauty storefront prototype with a dark editorial visual system and acid-lime accents.
 
 ## Run locally
-Open `index.html` in a browser, or serve this folder with any static web server.
+Open `index.html` through a local static server. Camera try-on requires HTTPS or localhost and explicit camera permission.
 
-## Included
-- Brand landing page and responsive navigation
-- Product cards with interactive add-to-bag state
-- Color playground with shade and intensity controls
-- Local selfie preview (image stays in the browser)
-- Save-look interaction using localStorage
-- Inspiration/community gallery and brand story
+## Features
+- Responsive brand landing page and product cards
+- Product detail views, wishlist, cart and demo checkout
+- Local order history and order detail views
+- Product category filters, keyword search and price sorting
+- Browser-local demo account and saved preferences
+- Live camera try-on prototype powered by MediaPipe Face Landmarker
+- On-device face landmark tracking with lipstick and eye-color overlays
+- Selfie preview and local look saving
 
-## Notes
-This is a front-end prototype. Checkout, account authentication, live AR face tracking, payments, inventory, and social publishing require backend/API integrations. The try-on panel is a color preview demo, not production AR.
+## Important prototype boundaries
+- Accounts, wishlist, cart and orders are stored in the current browser using localStorage; they are not synchronized across devices.
+- Checkout is simulated. No payment is collected, and no shipping label or real fulfillment order is created.
+- Live try-on uses browser camera access and a face-landmark overlay. It is an experimental visual preview, not shade-accurate commercial AR or a substitute for device/browser testing.
+- MediaPipe runtime/model assets load from external CDNs; a network connection is required.
+- Production launch still requires a secure backend, authentication, database, payment provider, inventory, privacy/consent flows and end-to-end testing.
