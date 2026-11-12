@@ -237,9 +237,11 @@
     if (!state) return;
     if (state === "success") {
       showShell("PAYMENT / THANK YOU", '<div class="hm-narrow" style="text-align:center"><div style="font-size:70px;color:var(--lime)">✳</div><h1>THANK YOU.</h1><p class="sub">Stripe has returned you to HALF MAGIC. Your order status will update after the signed payment webhook is processed.</p><button class="limebtn" onclick="closePage();openPage(\'orders\')">VIEW MY ORDERS ↗</button></div>');
-      localStorage.removeItem("hm-cart");
-      window.cart = [];
+      localStorage.setItem("hm-cart", "[]");
+      if (Array.isArray(window.cart)) window.cart.length = 0;
+      else window.cart = [];
       ["bagCount","cartNum"].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = "0"; });
+      const total = document.getElementById("cartTotal"); if (total) total.textContent = "$0.00";
     } else if (state === "cancelled") {
       showShell("CHECKOUT / NOT FINISHED", '<div class="hm-narrow"><h1>NO PRESSURE.</h1><p class="sub">Your payment was not completed. Your bag is still here.</p><button class="limebtn" onclick="closePage();openPage(\'cart\')">BACK TO YOUR BAG ↗</button></div>');
     }
