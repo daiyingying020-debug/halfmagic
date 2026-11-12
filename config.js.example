@@ -1,0 +1,6 @@
+// Copy this file to config.js and fill in your Supabase project values.
+// The anon/publishable key is intended for browser use; never put the service-role key here.
+window.HM_CONFIG = {
+  supabaseUrl: "https://YOUR_PROJECT.supabase.co",
+  supabaseAnonKey: "YOUR_SUPABASE_ANON_OR_PUBLISHABLE_KEY"
+};
