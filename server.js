@@ -76,6 +76,7 @@ app.get("/api/products", async (_req, res) => {
 
 // Client sends product IDs and quantities only. Prices are always read from the database.
 app.post("/api/checkout/session", requireUser, async (req, res) => {
+  let reservedOrderId = null;
   const items = req.body && req.body.items;
   if (!Array.isArray(items) || items.length < 1 || items.length > 30) {
     return res.status(400).json({ error: "Provide between 1 and 30 cart lines." });
@@ -98,6 +99,7 @@ app.post("/api/checkout/session", requireUser, async (req, res) => {
       return res.status(status).json({ error: status === 409 ? "One or more items are unavailable." : "Could not reserve your order." });
     }
 
+    reservedOrderId = orderId;
     const { data: lines, error: linesError } = await supabase.from("order_items")
       .select("product_id, quantity, unit_price_cents, products(name)")
       .eq("order_id", orderId);
@@ -123,6 +125,10 @@ app.post("/api/checkout/session", requireUser, async (req, res) => {
     if (updateError) throw updateError;
     res.json({ checkout_url: session.url });
   } catch (err) {
+    if (reservedOrderId) {
+      const { error: releaseError } = await supabase.rpc("release_order_reservation", { p_order_id: reservedOrderId });
+      if (releaseError) console.error("Could not release failed checkout reservation:", releaseError);
+    }
     console.error("Checkout session creation failed:", err);
     res.status(500).json({ error: "Could not start secure checkout." });
   }
